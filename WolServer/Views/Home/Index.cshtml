@@ -1,0 +1,72 @@
+﻿@model WolModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@section Scripts
+{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script>
+        $('#submitbtn').click(function() {
+
+            var host = $("#Host").val();
+            var macAddr = $("#MacAddr").val();
+            var port = $("#Port").val();
+
+            $.ajax({
+                type: 'post',
+                url: '@Url.Action("Index", "Home")',
+                data: {
+                    Host: host,
+                    MacAddr: macAddr,
+                    Port: port
+                },
+                dataType: 'json',
+                success: function (data, stutas, xhr) {
+                    if (data.result === true) {
+                        alert("Succeed");
+                    } else {
+                        alert("Failed:"+data.message);
+                    }
+                },
+                error: function(xhr, textStatus, data) {
+                    alert("Error:"+data);
+                },
+                complete: function(xhr, textStatus) {
+
+                }
+            });
+        });
+    </script>
+
+}
+<header>
+    <h1>WolTool</h1>
+    <br />
+</header>
+
+<div class="text-center col-6">
+    <form role="form">
+        <div class="form-group">
+            <label>Hostname:</label>
+            <input type="text" id="Host" asp-for="Host" class="form-control" placeholder="10.0.0.1" />
+            <span asp-validation-for="Host" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>MacAddress:</label>
+            <input type="text" id="MacAddr" asp-for="MacAddr" class="form-control" placeholder="112233445566" />
+            <span asp-validation-for="MacAddr" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label> Port:</label>
+            <input type="text" id="Port" asp-for="Port" value="9" class="form-control" />
+            <span asp-validation-for="Port" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="button" id="submitbtn" value="提交" />
+        </div>
+    </form>
+</div>
+
