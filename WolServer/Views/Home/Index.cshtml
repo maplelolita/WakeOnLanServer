@@ -9,6 +9,22 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 
     <script>
+        var oldHost = localStorage.getItem("HOST");
+        var oldMac = localStorage.getItem("MAC");
+        var oldPort = localStorage.getItem("PORT");
+        if (typeof oldHost != "undefined" && oldHost != null && oldHost != "") {
+            $("#Host").val(oldHost);
+        }
+
+        if (typeof oldMac != "undefined" && oldMac != null && oldMac != "") {
+            $("#MacAddr").val(oldMac);
+        }
+
+        if (typeof oldPort != "undefined" && oldPort != null && oldPort != "") {
+            $("#Port").val(oldPort);
+        }
+
+
         $('#submitbtn').click(function() {
 
             var host = $("#Host").val();
@@ -35,7 +51,9 @@
                     alert("Error:"+data);
                 },
                 complete: function(xhr, textStatus) {
-
+                    localStorage.setItem("HOST", host);
+                    localStorage.setItem("MAC", macAddr);
+                    localStorage.setItem("PORT", port);
                 }
             });
         });
