@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -43,13 +45,34 @@ namespace WolServer
             return packet;
         }
 
-        public static Task SendRequest(string host, ushort port, byte[] macAddr)
+        public static async Task SendRequest(string host, ushort port, byte[] macAddr)
         {
-            using (var client = new UdpClient())
+            var packet = BuildMagicPacket(macAddr);
+            try
             {
-                var packet = BuildMagicPacket(macAddr);
-                return client.SendAsync(packet, packet.Length, host, port);
+                using (var client = new UdpClient())
+                {
+                    await client.SendAsync(packet, packet.Length, host, port);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            try
+            {
+                using (var client = new UdpClient())
+                {
+                    client.Connect(IPAddress.Broadcast, 0);
+                    await client.SendAsync(packet, packet.Length);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+           
         }
 
     }
