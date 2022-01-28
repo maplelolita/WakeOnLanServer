@@ -6,22 +6,49 @@
 
 @section Scripts
 {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 
     <script>
-        var oldHost = localStorage.getItem("HOST");
-        var oldMac = localStorage.getItem("MAC");
-        var oldPort = localStorage.getItem("PORT");
-        if (typeof oldHost != "undefined" && oldHost != null && oldHost != "") {
-            $("#Host").val(oldHost);
+        function getQueryString(name) {
+            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return unescape(r[2]);
+            }
+            return null;
         }
 
-        if (typeof oldMac != "undefined" && oldMac != null && oldMac != "") {
-            $("#MacAddr").val(oldMac);
+        var paraHost = getQueryString("host");
+        var paraMac = getQueryString("mac");
+        var paraport = getQueryString("port");
+
+
+        if (typeof paraHost != "undefined" && paraHost != null && paraHost != "") {
+            $("#Host").val(paraHost);
+        } else {
+            var oldHost = localStorage.getItem("HOST");
+            if (typeof oldHost != "undefined" && oldHost != null && oldHost != "") {
+                $("#Host").val(oldHost);
+            }
         }
 
-        if (typeof oldPort != "undefined" && oldPort != null && oldPort != "") {
-            $("#Port").val(oldPort);
+        if (typeof paraMac != "undefined" && paraMac != null && paraMac != "") {
+            $("#MacAddr").val(paraMac);
+        } else {
+            var oldMac = localStorage.getItem("MAC");
+            if (typeof oldMac != "undefined" && oldMac != null && oldMac != "") {
+                $("#MacAddr").val(oldMac);
+            }
+        }
+
+
+        if (typeof paraport != "undefined" && paraport != null && paraport != "") {
+            $("#Host").val(paraport);
+        } else {
+            var oldPort = localStorage.getItem("PORT");
+            if (typeof oldPort != "undefined" && oldPort != null && oldPort != "") {
+                $("#Port").val(oldPort);
+            }
         }
 
 
@@ -40,15 +67,15 @@
                     Port: port
                 },
                 dataType: 'json',
-                success: function (data, stutas, xhr) {
+                success: function(data, stutas, xhr) {
                     if (data.result === true) {
                         alert("Succeed");
                     } else {
-                        alert("Failed:"+data.message);
+                        alert("Failed:" + data.message);
                     }
                 },
                 error: function(xhr, textStatus, data) {
-                    alert("Error:"+data);
+                    alert("Error:" + data);
                 },
                 complete: function(xhr, textStatus) {
                     localStorage.setItem("HOST", host);
@@ -60,31 +87,31 @@
     </script>
 
 }
+
 <header>
     <h1>WolTool</h1>
-    <br />
+    <br/>
 </header>
 
 <div class="text-center col-6">
     <form role="form">
         <div class="form-group">
             <label>Hostname:</label>
-            <input type="text" id="Host" asp-for="Host" class="form-control" placeholder="10.0.0.1" />
+            <input type="text" id="Host" asp-for="Host" class="form-control" placeholder="10.0.0.1"/>
             <span asp-validation-for="Host" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label>MacAddress:</label>
-            <input type="text" id="MacAddr" asp-for="MacAddr" class="form-control" placeholder="112233445566" />
+            <input type="text" id="MacAddr" asp-for="MacAddr" class="form-control" placeholder="112233445566"/>
             <span asp-validation-for="MacAddr" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label> Port:</label>
-            <input type="text" id="Port" asp-for="Port" value="9" class="form-control" />
+            <input type="text" id="Port" asp-for="Port" value="9" class="form-control"/>
             <span asp-validation-for="Port" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <input type="button" id="submitbtn" value="submit" />
+            <input type="button" id="submitbtn" value="submit"/>
         </div>
     </form>
 </div>
-
